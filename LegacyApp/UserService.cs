@@ -26,22 +26,22 @@ namespace LegacyApp
             //     return false;
             // }
 
-            if (!CheckConditions(firstName, lastName, email, dateOfBirth, clientId)) return false;
+            if (!CheckConditions(firstName, lastName, email, dateOfBirth, clientId))return false;
 
             var clientRepository = new ClientRepository();
             var client = clientRepository.GetById(clientId);
-
+            
+            
             var user = new User
             {
-                LastName = client.LastName,
-                ClientId = client.ClientId,
-                Address = client.Address,
-                Type = client.Address,
-                Email = client.Email,
+                Client = client,
+                EmailAddress = email,
                 DateOfBirth = dateOfBirth,
                 FirstName = firstName,
+                LastName = lastName,
+                
             };
-
+            
             switch (client.Type)
             {
                 case "VeryImportantClinet":
@@ -58,13 +58,13 @@ namespace LegacyApp
                     break;
                 
                 default:
+                    
                     user.HasCreditLimit = true;
                     using (var userCreditService = new UserCreditService())
                     {
                         int creditLimit = userCreditService.GetCreditLimit(user.LastName, user.DateOfBirth);
                         user.CreditLimit = creditLimit; 
                     }
-
                     break;
             }
 
@@ -112,7 +112,7 @@ namespace LegacyApp
         {
             List<Func<bool>> conditions = new List<Func<bool>>
             {
-                () => string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName),
+                () => !string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName),
                 () => email.Contains("@") && email.Contains("."),
                 () => CalculateAge(dateOfBirth) >= 21
             };
