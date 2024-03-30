@@ -30,11 +30,13 @@ namespace LegacyApp
 
             var user = new User
             {
-                Client = client,
+                LastName = client.LastName,
+                ClientId = client.ClientId,
+                Address = client.Address,
+                Type = client.Address,
+                Email = client.Email,
                 DateOfBirth = dateOfBirth,
-                EmailAddress = email,
                 FirstName = firstName,
-                LastName = lastName
             };
 
             if (client.Type == "VeryImportantClient")
@@ -46,7 +48,7 @@ namespace LegacyApp
                 using (var userCreditService = new UserCreditService())
                 {
                     int creditLimit = userCreditService.GetCreditLimit(user.LastName, user.DateOfBirth);
-                    creditLimit = creditLimit * 2;
+                    creditLimit *= 2;
                     user.CreditLimit = creditLimit;
                 }
             }
@@ -56,7 +58,7 @@ namespace LegacyApp
                 using (var userCreditService = new UserCreditService())
                 {
                     int creditLimit = userCreditService.GetCreditLimit(user.LastName, user.DateOfBirth);
-                    user.CreditLimit = creditLimit;
+                    user.CreditLimit = creditLimit; 
                 }
             }
 
